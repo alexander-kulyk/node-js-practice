@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Books List</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <h1>Books</h1>
+  <ul id="books-list"></ul>
+  <script>
+    axios.get('http://localhost:3000/books')
+      .then(response => {
+        const books = response.data;
+        const list = document.getElementById('books-list');
+        books.forEach(book => {
+          const li = document.createElement('li');
+          li.textContent = JSON.stringify(book);
+          list.appendChild(li);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching books:', error);
+      });
+  </script>
+</body>
+</html>
