@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 //other
 const booksRouter = require('./routes/api/books'); // Importing the books router
 const app = require('./server'); // Importing the server configuration
-const { DB_HOST } = require('./config');
+const { DB_HOST } = process.env;
 
 mongoose.set('strictQuery', false); // Disable strict query mode
 
