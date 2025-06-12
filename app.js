@@ -3,18 +3,23 @@ const express = require('express');
 fs = require('fs').promises;
 const cors = require('cors');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 //other
-const booksRouter = require('./routes/api/books'); // Importing the books router
-const app = require('./server'); // Importing the server configuration
-const { DB_HOST } = process.env;
+const booksRouter = require('./routes/api/books'); // Importing the books routerd
+
+const app = express();
+
+dotenv.config();
+
+const { DB_HOST, PORT = 3000 } = process.env;
 
 mongoose.set('strictQuery', false); // Disable strict query mode
 
 mongoose
-  .connect(DB_HOST)
+  .connect(DB_HOST) // Connect to the MongoDB database using the connection string from environment variables
   .then(() => {
     console.log('The database is connected');
-    app.listen(3000, () => {
+    app.listen(PORT, () => {
       console.log('Server is running on port 3000');
     });
   })
