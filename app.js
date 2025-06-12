@@ -6,12 +6,12 @@ const mongoose = require('mongoose');
 //other
 const booksRouter = require('./routes/api/books'); // Importing the books router
 const app = require('./server'); // Importing the server configuration
-const { dbURI } = require('./config');
+const { DB_HOST } = require('./config');
 
 mongoose.set('strictQuery', false); // Disable strict query mode
 
 mongoose
-  .connect(dbURI)
+  .connect(DB_HOST)
   .then(() => {
     console.log('The database is connected');
     app.listen(3000, () => {
