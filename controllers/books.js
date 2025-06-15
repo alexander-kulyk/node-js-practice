@@ -1,24 +1,22 @@
 //core
 const express = require('express');
-const Joi = require('joi'); // Validation library
 //other
-const books = require('../books'); // Adjust the path as necessary
 const controllersWrapper = require('../helpers/controllerWrapper'); // Adjust the path as necessary
-const { getHttpError } = require('../helpers'); // Adjust the path as necessary
-
-const validationSchema = Joi.object({
-  title: Joi.string().required(), // Title is required
-  author: Joi.string().required(), // Author is required
-});
+const { getHttpError } = require('../helpers/getHttpError'); // Adjust the path as necessary
+const { validationSchema, Book } = require('../models/book'); // Import the book model
 
 const getAll = async (req, resp, next) => {
-  const result = await books.getAll();
+  //const result = await books.getAll();
+  const result = await Book.find({ title: 'Motherfucker' });
   resp.json(result);
 };
 
 const getById = async (req, resp, next) => {
   const { id } = req.params;
-  const book = await books.getById(id);
+  //const book = await books.getById(id);
+
+  //const book = await Book.findOne({ _id: id });
+  const book = await Book.findById(id);
 
   if (!book) {
     throw getHttpError(404, 'Book not found');
@@ -32,8 +30,11 @@ const add = async (req, resp) => {
   if (!!error) {
     return resp.status(400).json({ message: error.message });
   }
-  const newBook = await books.add(req.body);
-  resp.status(201).json(newBook);
+  const result = await Book.create(req.body);
+  resp.status(201).json(result);
+
+  // const newBook = await books.add(req.body);
+  // resp.status(201).json(newBook);
 };
 
 const updateById = async (req, resp, next) => {
@@ -43,7 +44,29 @@ const updateById = async (req, resp, next) => {
       return resp.status(400).json({ message: error.message });
     }
     const { id } = req.params;
-    const updatedBook = await books.updateById(id, req.body);
+    const updatedBook = await Book.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    if (!updatedBook) {
+      throw getHttpError(404, 'Book not found');
+    }
+
+    resp.json(updatedBook);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateFavorite = async (req, resp, next) => {
+  try {
+    const { error } = updateFavoriteSchema.validate(req.body);
+    if (!!error) {
+      return resp.status(400).json({ message: error.message });
+    }
+    const { id } = req.params;
+    const updatedBook = await Book.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
     if (!updatedBook) {
       throw getHttpError(404, 'Book not found');
     }
@@ -56,7 +79,9 @@ const updateById = async (req, resp, next) => {
 
 const deleteById = async (req, resp, next) => {
   const { id } = req.params;
-  const deletedBooks = await books.deleteById(id);
+  //const deletedBooks = await books.deleteById(id);
+  const deletedBooks = await Book.findByIdAndDelete(id);
+  // If no book was found and deleted, throw a 404 error
   if (!deletedBooks) {
     throw getHttpError(404, 'Book not found');
   }
@@ -68,5 +93,6 @@ module.exports = {
   getById: controllersWrapper(getById),
   add: controllersWrapper(add),
   updateById: controllersWrapper(updateById),
+  updateFavorite: controllersWrapper(updateFavorite),
   deleteById: controllersWrapper(deleteById),
 };
