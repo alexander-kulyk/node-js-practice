@@ -1,5 +1,3 @@
-//core
-const express = require('express');
 //other
 const controllersWrapper = require('../helpers/controllerWrapper'); // Adjust the path as necessary
 const { getHttpError } = require('../helpers/getHttpError'); // Adjust the path as necessary

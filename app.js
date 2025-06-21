@@ -5,7 +5,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 //other
-const booksRouter = require('./routes/api/books'); // Importing the books routerd
+const booksRouter = require('./routes/api/books'); // Importing the books router
+const authRouter = require('./routes/api/auth'); // Importing the auth router
 
 const app = express();
 
@@ -31,6 +32,7 @@ mongoose
 app.use(cors()); // enable CORS for all routes
 
 app.use('/api/books', booksRouter); // Mounting the books router on the /api/books path
+app.use('/api/auth', authRouter); // Mounting the auth router on the /api/auth path
 
 app.use(async (req, resp, next) => {
   const { method, url } = req;
